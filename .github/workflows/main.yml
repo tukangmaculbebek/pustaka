@@ -1,0 +1,48 @@
+name: Start Streaming
+
+on:
+  workflow_dispatch:
+    inputs:
+      info:
+        description: '== Github Stream by Ananda Chakim =='
+        required: false
+        default: 'Berdoalah Sebelum Bekerja'
+      hours:
+        description: 'Mau live berapa jam ?'
+        required: true
+        default: '1'
+      video_url:
+        description: 'Masukkan URL video'
+        required: true
+        default: 'https://videoku.com/source.mp4'
+      streaming_key:
+        description: 'Masukkan Streaming Key (YouTube, Tiktok, Shopee, dll)'
+        required: true
+        default: 'Streaming Key'
+      rtmp_url:
+        description: 'Masukkan URL RTMP (misal dari YouTube atau platform lainnya)'
+        required: true
+        default: 'rtmp://a.rtmp.youtube.com/live2'
+
+jobs:
+  streaming_job:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup FFmpeg
+      run: sudo apt-get install ffmpeg
+
+    - name: Run Streaming Loop
+      run: |
+        HOURS=${{ github.event.inputs.hours }}
+        VIDEO_URL=${{ github.event.inputs.video_url }}
+        STREAMING_KEY=${{ github.event.inputs.streaming_key }}
+        RTMP_URL=${{ github.event.inputs.rtmp_url }}
+
+        echo "Streaming for $HOURS hours with video from $VIDEO_URL, key $STREAMING_KEY, and RTMP URL $RTMP_URL"
+        
+        # Menjalankan skrip stream.sh dengan input yang diperlukan
+        chmod +x ./stream.sh
+        ./stream.sh "$VIDEO_URL" "$RTMP_URL" "$STREAMING_KEY" "$HOURS"
